@@ -1,25 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Route, Routes} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "./hooks/redux";
-import {increment} from "./store/reducers/UserSlice";
-import {fetchUsers} from "./store/reducers/ActionCreators";
+import {fetchCats, fetchCatCategories} from "./store/reducers/ActionCreators";
+import {SideBar} from "./Components/Main/SideBar";
+import Wrapper from "./Components/Elements/DivWrapper";
+import {ShowPage} from "./Components/Main/ShowPage";
+
 
 function App() {
-    const {count, isLoading, users, error} = useAppSelector(state => state.user)
+    const {isLoading, error} = useAppSelector(state => state.cat)
     const dispatch = useAppDispatch()
-    const handle = () => {
-        // dispatch(increment(5))
-        dispatch(fetchUsers())
-    }
+    React.useEffect(() => {
+        dispatch(fetchCatCategories())
+    }, [])
+
     return (
-        <div className="App">
-            <h1>{count}</h1>
+        <Wrapper>
+            <SideBar/>
             {isLoading && <h2>Loading ...</h2>}
             {error && <h2>{error}</h2>}
-            {JSON.stringify(users, null, 2)}
-            <button onClick={handle}>INCREMENT</button>
-        </div>
+            <Routes>
+                <Route path="/category/:id" element={<ShowPage/>}/>
+            </Routes>
+        </Wrapper>
     );
 }
 
